@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写文章</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/blog_edit.css">
+    <link rel="stylesheet" href="editor.md/css/editormd.min.css">
+</head>
+<body>
+<!-- 导航栏 -->
+<div class="nav">
+    <!-- 左边 -->
+    <div class="nav-left">
+        <img src="img/logo2.png" alt="">
+        <span>HelloEe</span>
+    </div>
+    <!-- 右边 -->
+    <div class="nav-right">
+        <a href="my_list.html">主页</a>
+        <a href="my_edit.html">写博客</a>
+        <a href="logout">注销</a>
+    </div>
+</div>
+<!-- 文章编辑区 -->
+<div id="edit-container">
+    <!-- 输入标题，发布按钮 -->
+    <div id="edit-title">
+        <input type="text" id="title" placeholder="在这里写下文章标题">
+        <button onclick="articleAdd()">发布文章</button>
+    </div>
+    <!-- 文章内容 -->
+    <div id="edit-content">
+        <textarea id="content" style="display: none;"></textarea>
+    </div>
+</div>
+
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="editor.md/lib/marked.min.js"></script>
+<script src="editor.md/lib/prettify.min.js"></script>
+<script src="editor.md/editormd.min.js"></script>
+<script src="js/util.js"></script>
+<script>
+
+    //makedown转化为html格式并展示
+    $(function () {
+        var editor = editormd("edit-content", {
+
+            width: "100%",
+
+            height: "calc(100% - 50px)",
+
+            markdown: "# 第一篇博客文章",
+
+            path: "editor.md/lib/",
+            saveHTMLToTextarea: true,
+        })
+    })
+
+
+    var title = document.querySelector("input");
+    var content = document.querySelector("textarea")
+
+    function articleAdd() {
+        if (!title.value) {
+            alert("标题不能为空")
+            return;
+        }
+        if (!content.value) {
+            alert("文章内容不能为空")
+            return;
+        }
+
+        ajax({
+            method: "post",
+            url: "add",
+            contentType: "application/json",
+            body: JSON.stringify({
+                title: title.value,
+                content: content.value,
+            }),
+            callback: function (status, responseText) {
+                var json = handleResponse(status, responseText);
+                if (!json) return;
+
+                if (json.ok) {
+                    alert("发布成功")
+                    location.href = "my_list.html";
+                }
+            }
+        });
+    }
+</script>
+</html>

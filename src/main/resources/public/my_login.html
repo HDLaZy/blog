@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDLaZy_Blog
+        &#x26EA</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+<!-- 导航栏 -->
+<div class="nav">
+    <!-- 左边 -->
+    <div class="nav-left">
+        <img src="../img/logo2.png" alt="">
+        <span>HelloEe</span>
+    </div>
+</div>
+<!-- 登录部分 -->
+<div id="login-container">
+    <div id="login-form">
+        <h3>登录</h3>
+        <div class="login-row">
+            <span>用户名</span>
+            <input type="text" id="username">
+        </div>
+        <div class="login-row">
+            <span>密码</span>
+            <input type="password" id="password">
+        </div>
+
+        <div id="error" style="color: red; height: 1.2em;"></div>
+        <div class="login-row">
+            <input type="submit" id="submit" value="提交">
+        </div>
+    </div>
+</div>
+</body>
+<script src="../js/util.js"></script>
+<script>
+
+    var btn = document.querySelector("#submit");
+    var username = document.querySelector("#username");
+    var password = document.querySelector("#password");
+    var error = document.querySelector("#error");
+    btn.onclick = function () {
+        if (!username.value) {
+
+            error.innerHTML = "账号不能为空";
+            return;
+        }
+        if (!password.value) {
+
+            error.innerHTML = "密码不能为空";
+            return;
+        }
+        error.innerHTML = '';
+
+        ajax({
+            method: "POST",
+            url: "login",
+            contentType: "application/json",
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value,
+            }),
+            callback: function (status, responseText) {
+                var json = handleResponse(status, responseText);
+                if (!json) return;
+
+                if (json.ok) {
+                    location.href = "my_list.html";
+                } else {
+                    error.innerHTML = json.error;
+                }
+            }
+        })
+    }
+</script>
+</html>
